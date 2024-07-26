@@ -88,6 +88,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "movie_lens_django.users",
+    "movie_lens_django.movies",
+    "movie_lens_django.genome",
+    "movie_lens_django.ratings",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
