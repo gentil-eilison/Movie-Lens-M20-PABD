@@ -43,7 +43,7 @@ class MovieGenomeTag(models.Model):
         related_name="movie_genome_tag",
         verbose_name=_("Genome Tag"),
     )
-    user_id = models.PositiveIntegerField(verbose_name=_("User ID"), unique=True)
+    user_id = models.PositiveIntegerField(verbose_name=_("User ID"))
 
     class Meta:
         verbose_name = _("Movie Genome Tags By User")
