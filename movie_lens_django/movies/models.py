@@ -19,6 +19,7 @@ class Genre(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=LONG_SIZED_CHAR_FIELD, verbose_name=_("Title"))
+    release_year = models.PositiveSmallIntegerField(verbose_name=_("Release Year"))
     genres = models.ManyToManyField(to=Genre, verbose_name=_("Genres"))
     genome_tags = models.ManyToManyField(to=GenomeTag, through="MovieGenomeTag")
 
