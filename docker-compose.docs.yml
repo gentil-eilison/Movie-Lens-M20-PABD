@@ -1,0 +1,16 @@
+services:
+  docs:
+    image: movie_lens_django_local_docs
+    container_name: movie_lens_django_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./movie_lens_django:/app/movie_lens_django:z
+    ports:
+      - '9000:9000'
+    command: /start-docs
