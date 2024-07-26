@@ -91,6 +91,7 @@ LOCAL_APPS = [
     "movie_lens_django.movies",
     "movie_lens_django.genome",
     "movie_lens_django.ratings",
+    "movie_lens_django.core",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
