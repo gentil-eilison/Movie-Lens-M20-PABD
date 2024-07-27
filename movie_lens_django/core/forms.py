@@ -1,6 +1,6 @@
 from django import forms
 
-from movie_lens_django.core.models import CSVImportMetaData
+from .models import CSVImportMetaData
 
 
 class CSVImportMetaDataBaseForm(forms.ModelForm):
@@ -9,6 +9,3 @@ class CSVImportMetaDataBaseForm(forms.ModelForm):
         fields = [
             "csv_file",
         ]
-
-    def add_csv_rows(self, rows):
-        pass

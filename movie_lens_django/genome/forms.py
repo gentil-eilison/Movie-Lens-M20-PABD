@@ -15,7 +15,7 @@ class GenomeTagForm(forms.ModelForm):
 
 class GenomeTagCSVImportMetaDataForm(CSVImportMetaDataBaseForm):
     def add_csv_rows(self, rows):
-        rows = StringIO.StringIO(rows)
+        rows = StringIO(rows)
         records_added = 0
         errors = []
         # Generate a dict per row, with the first CSV row being the → keys.
@@ -32,3 +32,9 @@ class GenomeTagCSVImportMetaDataForm(CSVImportMetaDataBaseForm):
             else:
                 errors.append(form.errors)
         return records_added, errors
+
+    def save(self, commit):
+        instance = super().save(commit)
+        file_content = instance.csv_file.read().decode("utf-8")
+        self.add_csv_rows(file_content)
+        return instance
