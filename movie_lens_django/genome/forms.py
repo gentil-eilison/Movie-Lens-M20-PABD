@@ -20,7 +20,7 @@ class GenomeTagCSVImportMetaDataForm(CSVImportMetaDataBaseForm):
         errors = []
         # Generate a dict per row, with the first CSV row being the → keys.
         for row in csv.DictReader(rows, delimiter=","):
-            # Bind the row data to the PurchaseForm.
+            # Bind the row data to the GenomeTagForm.
             tag_id = row.pop("tagId")
             form = GenomeTagForm(row)
             # Check to see if the row data is valid.
@@ -33,8 +33,8 @@ class GenomeTagCSVImportMetaDataForm(CSVImportMetaDataBaseForm):
                 errors.append(form.errors)
         return records_added, errors
 
-    def save(self, commit):
-        instance = super().save(commit)
+    def save(self, commit=True):  # noqa: FBT002
+        instance = super().save(commit=commit)
         file_content = instance.csv_file.read().decode("utf-8")
         self.add_csv_rows(file_content)
         return instance
