@@ -20,8 +20,8 @@ urlpatterns = [
     path("users/", include("movie_lens_django.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    path("genome/", include("genome.urls")),
-    path("movies/", include("movies.urls")),
+    path("genome/", include("movie_lens_django.genome.urls")),
+    path("movies/", include("movie_lens_django.movies.urls")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
