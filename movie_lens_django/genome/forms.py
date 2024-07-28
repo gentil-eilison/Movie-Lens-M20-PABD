@@ -4,7 +4,7 @@ import pandas as pd
 from django import forms
 
 from movie_lens_django.constants import READ_CSV_CHUNK_SIZE
-from movie_lens_django.core.forms import CSVImportMetaDataBaseForm
+from movie_lens_django.core.forms import SimpleCSVImportMetaDataForm
 from movie_lens_django.genome.models import GenomeTag
 
 
@@ -14,7 +14,7 @@ class GenomeTagForm(forms.ModelForm):
         fields = ["tag"]
 
 
-class GenomeTagCSVImportMetaDataForm(CSVImportMetaDataBaseForm):
+class GenomeTagCSVImportMetaDataForm(SimpleCSVImportMetaDataForm):
     def add_csv_rows(self, filename: str):
         records_added = 0
         errors_count = 0
@@ -40,14 +40,3 @@ class GenomeTagCSVImportMetaDataForm(CSVImportMetaDataBaseForm):
             end_time = time.time()
         elapsed_time = end_time - start_time
         return records_added, errors_count, elapsed_time
-
-    def save(self, commit=True):  # noqa: FBT002
-        instance = super().save(commit=commit)
-        records_added, errors_count, elasped_time = self.add_csv_rows(
-            instance.csv_file.path,
-        )
-        instance.inserted_data_count = records_added
-        instance.errors_count = errors_count
-        instance.upload_time_in_minutes = elasped_time
-        instance.save()
-        return instance
