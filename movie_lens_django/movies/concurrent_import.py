@@ -2,6 +2,7 @@ import re
 import time
 
 from celery import shared_task
+from django.db import IntegrityError
 
 from movie_lens_django.core.concurrent_import import ConcurrentImport
 from movie_lens_django.movies.forms import MovieForm
@@ -23,19 +24,26 @@ class MoviesConcurrentImport(ConcurrentImport):
         return "", ""
 
     @staticmethod
-    def __create_genres(genres_row: str) -> None:
+    def __get_or_create_genres(genres_row: str) -> list[int]:
         row_genres_names = genres_row.split("|")
         cleaned_genres_names = [genre_name.strip() for genre_name in row_genres_names]
+        genres_ids = []
         for genre_name in cleaned_genres_names:
-            Genre.objects.get_or_create(
-                name=genre_name,
-                defaults={"name": genre_name},
-            )
+            try:
+                genre, _ = Genre.objects.get_or_create(
+                    name=genre_name,
+                    defaults={"name": genre_name},
+                )
+                genres_ids.append(genre.id)
+            except IntegrityError:
+                pass
+        return genres_ids
 
     @staticmethod
     @shared_task
     def process_csv_chunk(chunk_data: list[dict], csv_id: int):
         movies = []
+        movies_genres = []
         records_added = 0
         errors_count = 0
         start_time = time.time()
@@ -43,7 +51,7 @@ class MoviesConcurrentImport(ConcurrentImport):
             title, release_year = MoviesConcurrentImport.__get_title_release_year(
                 row["title"],
             )
-            MoviesConcurrentImport.__create_genres(row["genres"])
+            genres_ids = MoviesConcurrentImport.__get_or_create_genres(row["genres"])
 
             if title and release_year:
                 form = MovieForm(data={"title": title, "release_year": release_year})
@@ -59,10 +67,19 @@ class MoviesConcurrentImport(ConcurrentImport):
                                 release_year=release_year,
                             ),
                         )
+                        current_movies_genres = [
+                            Movie.genres.through(
+                                movie_id=row["movieId"],
+                                genre_id=genre_id,
+                            )
+                            for genre_id in genres_ids
+                        ]
+                        movies_genres.extend(current_movies_genres)
                         records_added += 1
                 else:
                     errors_count += 1
         Movie.objects.bulk_create(movies)
+        Movie.genres.through.objects.bulk_create(movies_genres)
         end_time = time.time()
         elasped_time = end_time - start_time
         MoviesConcurrentImport.update_csv_metadata.delay(

@@ -7,7 +7,11 @@ from movie_lens_django.genome.models import GenomeTag
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=MEDIUM_SIZED_CHAR_FIELD, verbose_name=_("Name"))
+    name = models.CharField(
+        max_length=MEDIUM_SIZED_CHAR_FIELD,
+        verbose_name=_("Name"),
+        unique=True,
+    )
 
     class Meta:
         verbose_name = _("Genre")

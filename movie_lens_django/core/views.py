@@ -10,7 +10,7 @@ from movie_lens_django.core.models import CSVImportMetaData
 class ImportView(SuccessMessageMixin, CreateView):
     model = CSVImportMetaData
     form_class = CSVImportMetaDataForm
-    success_message = "Importação inicada"
+    success_message = "Importação iniciada"
     success_url = "/"
 
 
