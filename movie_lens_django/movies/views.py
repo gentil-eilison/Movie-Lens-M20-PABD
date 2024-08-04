@@ -1,8 +1,6 @@
 from movie_lens_django.core.views import ConcurrentImportView
 from movie_lens_django.movies.concurrent_import import MoviesConcurrentImport
-from movie_lens_django.movies.concurrent_import_movie_tag import (
-    MovieTagConcurrentImport,
-)
+from movie_lens_django.movies.concurrent_import import MovieTagConcurrentImport
 
 
 class ImportCSVMovieView(ConcurrentImportView):

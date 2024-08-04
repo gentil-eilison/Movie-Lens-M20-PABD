@@ -1,13 +1,13 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from movie_lens_django.constants import MEDIUM_SIZED_CHAR_FIELD
+from movie_lens_django.constants import LONG_SIZED_CHAR_FIELD
 
 from . import validators
 
 
 class GenomeTag(models.Model):
-    tag = models.CharField(max_length=MEDIUM_SIZED_CHAR_FIELD, verbose_name=_("Tag"))
+    tag = models.CharField(max_length=LONG_SIZED_CHAR_FIELD, verbose_name=_("Tag"))
 
     class Meta:
         verbose_name = _("Genome Tag")
