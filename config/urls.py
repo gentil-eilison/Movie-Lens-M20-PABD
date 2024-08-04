@@ -22,6 +22,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     path("genome/", include("movie_lens_django.genome.urls")),
     path("movies/", include("movie_lens_django.movies.urls")),
+    path("ratings/", include("movie_lens_django.ratings.urls")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

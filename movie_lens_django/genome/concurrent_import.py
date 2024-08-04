@@ -1,5 +1,3 @@
-import sys
-
 from django.db import connection
 
 from movie_lens_django.core.concurrent_import import ConcurrentImport
@@ -33,5 +31,4 @@ class GenomeScoresConcurrentImport(ConcurrentImport):
                     errors_count += 1
             cursor.execute(insert_command)
             rows_affected = cursor.rowcount
-            sys.stdout.write(rows_affected)
             return errors_count, rows_affected
