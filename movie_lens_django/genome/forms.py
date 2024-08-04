@@ -5,6 +5,7 @@ from django import forms
 
 from movie_lens_django.constants import READ_CSV_CHUNK_SIZE
 from movie_lens_django.core.forms import SimpleCSVImportMetaDataForm
+from movie_lens_django.genome.models import GenomeScore
 from movie_lens_django.genome.models import GenomeTag
 
 
@@ -40,3 +41,9 @@ class GenomeTagCSVImportMetaDataForm(SimpleCSVImportMetaDataForm):
             end_time = time.time()
         elapsed_time = end_time - start_time
         return records_added, errors_count, elapsed_time
+
+
+class GenomeScoreForm(forms.ModelForm):
+    class Meta:
+        model = GenomeScore
+        fields = ["relevance", "movie", "genome_tag"]

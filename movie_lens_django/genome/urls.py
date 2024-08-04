@@ -10,4 +10,9 @@ urlpatterns = [
         views.ImportCSVGenomeTagView.as_view(),
         name="csv-import",
     ),
+    path(
+        "scores-import/",
+        views.ImportCSVGenomeScoreView.as_view(),
+        name="scores-import",
+    ),
 ]
