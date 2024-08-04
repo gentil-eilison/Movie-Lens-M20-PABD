@@ -1,7 +1,5 @@
 import re
-import time
 
-from celery import shared_task
 from django.db import IntegrityError
 
 from movie_lens_django.core.concurrent_import import ConcurrentImport
@@ -40,13 +38,11 @@ class MoviesConcurrentImport(ConcurrentImport):
         return genres_ids
 
     @staticmethod
-    @shared_task
-    def process_csv_chunk(chunk_data: list[dict], csv_id: int):
+    def process_csv_chunk(chunk_data: list[dict]):
         movies = []
         movies_genres = []
         records_added = 0
         errors_count = 0
-        start_time = time.time()
         for row in chunk_data:
             title, release_year = MoviesConcurrentImport.__get_title_release_year(
                 row["title"],
@@ -80,11 +76,4 @@ class MoviesConcurrentImport(ConcurrentImport):
                     errors_count += 1
         Movie.objects.bulk_create(movies)
         Movie.genres.through.objects.bulk_create(movies_genres)
-        end_time = time.time()
-        elasped_time = end_time - start_time
-        MoviesConcurrentImport.update_csv_metadata.delay(
-            csv_id,
-            records_added,
-            errors_count,
-            elasped_time,
-        )
+        return errors_count, records_added
