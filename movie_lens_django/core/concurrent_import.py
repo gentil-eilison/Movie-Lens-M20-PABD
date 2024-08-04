@@ -1,4 +1,5 @@
 import abc
+import importlib
 
 import pandas as pd
 from celery import group
@@ -15,13 +16,19 @@ class ConcurrentImport(abc.ABC):
         error_msg = "You must implement 'process_csv_chunk' method"
         raise NotImplementedError(error_msg)
 
-    @classmethod
-    def call_import_task(cls, csv_id: int, filename: str):
+    @staticmethod
+    @shared_task
+    def call_import_task(concurrent_import_class_name: str, csv_id: int, filename: str):
+        module_name, class_name = concurrent_import_class_name.rsplit(".", 1)
+        module = importlib.import_module(module_name)
+        concurrent_import_class = getattr(module, class_name)
         chunk_tasks = []
         with pd.read_csv(filename, chunksize=READ_CSV_CHUNK_SIZE) as reader:
             for chunk in reader:
                 chunk_data = chunk.to_dict(orient="records")
-                chunk_tasks.append(cls.process_csv_chunk.s(chunk_data, csv_id))
+                chunk_tasks.append(
+                    concurrent_import_class.process_csv_chunk.s(chunk_data, csv_id),
+                )
 
         group(chunk_tasks).apply_async()
 

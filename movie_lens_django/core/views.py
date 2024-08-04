@@ -19,7 +19,8 @@ class ConcurrentImportView(ImportView):
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
         form.save()
-        self.concurrent_import_class.call_import_task(
+        self.concurrent_import_class.call_import_task.delay(
+            concurrent_import_class_name=f"{self.concurrent_import_class.__module__}.{self.concurrent_import_class.__name__}",
             csv_id=form.instance.id,
             filename=form.instance.csv_file.path,
         )
