@@ -10,4 +10,9 @@ urlpatterns = [
         views.ImportCSVMovieView.as_view(),
         name="csv-import",
     ),
+    path(
+        "movies-tags-csv-import/",
+        views.ImportCSVMovieTagView.as_view(),
+        name="movie-tag-csv-import",
+    ),
 ]
