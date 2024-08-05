@@ -3,6 +3,7 @@ import datetime
 import pytz
 from django.conf import settings
 from django.db import connection
+from django.db import transaction
 
 from movie_lens_django.core.concurrent_import import ConcurrentImport
 from movie_lens_django.movies.models import Movie
@@ -39,6 +40,6 @@ class RatingsConcurrentImport(ConcurrentImport):
                     insert_command += "ON CONFLICT DO NOTHING;"
             else:
                 errors_count += 1
-        with connection.cursor() as cursor:
+        with connection.cursor() as cursor, transaction.atomic():
             cursor.execute(insert_command)
             return errors_count, cursor.rowcount

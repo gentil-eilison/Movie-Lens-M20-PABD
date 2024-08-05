@@ -1,5 +1,6 @@
 import abc
 import importlib
+import sys
 import time
 
 import pandas as pd
@@ -25,9 +26,14 @@ class ConcurrentImport(abc.ABC):
 
         total_errors, total_rows = 0, 0
         start_time = time.time()
-        with pd.read_csv(filename, chunksize=READ_CSV_CHUNK_SIZE) as reader:
+        with pd.read_csv(
+            filename,
+            chunksize=READ_CSV_CHUNK_SIZE,
+            quotechar='"',
+        ) as reader:
             for chunk in reader:
                 chunk_data = chunk.to_dict(orient="records")
+                sys.stdout.write(len(chunk_data))
                 errors_count, rows_count = concurrent_import_class.process_csv_chunk(
                     chunk_data,
                 )

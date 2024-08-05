@@ -1,4 +1,5 @@
 from django.db import connection
+from django.db import transaction
 
 from movie_lens_django.core.concurrent_import import ConcurrentImport
 from movie_lens_django.genome.models import GenomeTag
@@ -29,6 +30,7 @@ class GenomeScoresConcurrentImport(ConcurrentImport):
                             """  # noqa: E501
                 else:
                     errors_count += 1
-            cursor.execute(insert_command)
-            rows_affected = cursor.rowcount
-            return errors_count, rows_affected
+            with transaction.atomic():
+                cursor.execute(insert_command)
+                rows_affected = cursor.rowcount
+                return errors_count, rows_affected
