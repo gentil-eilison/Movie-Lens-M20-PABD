@@ -1,6 +1,7 @@
 import datetime
 
 import pytz
+from celery import shared_task
 from django.conf import settings
 from django.db import connection
 from django.db import transaction
@@ -17,6 +18,7 @@ class RatingsConcurrentImport(ConcurrentImport):
         return timestamp_obj.strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
+    @shared_task(name="process_ratings")
     def process_csv_chunk(chunk_data: list[dict]) -> tuple[int, int]:
         errors_count = 0
         movies_ids = set(Movie.objects.values_list("id", flat=True))

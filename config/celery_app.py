@@ -17,8 +17,5 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 app.conf.update(
-    task_annotation={
-        "*": {"rate_limit": "10/s"},
-    },
     worker_concurrency=8,
 )
