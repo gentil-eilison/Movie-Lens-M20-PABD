@@ -1,10 +1,13 @@
 import re
+import sys
 
+from celery import shared_task
 from django.db import IntegrityError
 from django.db import connection
 from django.db import transaction
 
 from movie_lens_django.core.concurrent_import import ConcurrentImport
+from movie_lens_django.genome.models import GenomeTag
 from movie_lens_django.movies.models import Genre
 from movie_lens_django.movies.models import Movie
 
@@ -82,3 +85,47 @@ class MoviesConcurrentImport(ConcurrentImport):
                 errors_count = cursor.rowcount
             Movie.genres.through.objects.bulk_create(movies_genres)
             return errors_count, cursor.rowcount
+
+
+class MovieTagConcurrentImport(ConcurrentImport):
+    @staticmethod
+    @shared_task
+    def process_csv_chunk(chunk_data: list[dict]):
+        errors_count = 0
+        tags = {
+            tag_name: tag_id
+            for tag_id, tag_name in GenomeTag.objects.values_list("id", "tag")
+        }
+        movies_ids = set(Movie.objects.values_list("id", flat=True))
+        insert_command = """
+        INSERT INTO movies_moviegenometag (user_id, genome_tag_id, movie_id) VALUES
+        """
+        insert_tag_command = """
+            INSERT INTO genome_genometag (tag) VALUES (%s) RETURNING id;
+        """
+        values = []
+        with connection.cursor() as cursor:
+            for row in chunk_data:
+                row_tag = row["tag"]
+                row_movie_id = row["movieId"]
+
+                if row_movie_id in movies_ids:
+                    if row_tag in tags:
+                        tag_id = tags[row_tag]
+                    else:
+                        cursor.execute(insert_tag_command, [row_tag])
+                        tag_id = cursor.fetchone()[0]
+                        tags[row_tag] = tag_id
+                    values.append(f"({row['userId']}, {tag_id}, {row_movie_id})")
+                else:
+                    errors_count += 1
+        if values:
+            insert_command += ", ".join(values)
+            insert_command += " ON CONFLICT DO NOTHING;"
+            with connection.cursor() as cursor:
+                cursor.execute(insert_command)
+                rows_affected = cursor.rowcount
+                sys.stdout.write(str(rows_affected))
+                return errors_count, rows_affected
+        else:
+            return errors_count, 0
