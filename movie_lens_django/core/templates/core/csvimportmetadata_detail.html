@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalhes do CSV</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{ object.csv_file }}</h1>
+      <table class="table table-striped text-center">
+        <thead>
+          <tr>
+            <th scope="col">Tempo total para processar</th>
+            <th scope="col">Quantidade de dados inseridos com sucesso</th>
+            <th scope="col">Número de registros que encontraram problemas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ object.formatted_upload_time }}</td>
+            <td>{{ object.formatted_inserted_data_count }}</td>
+            <td>{{ object.formatted_errors_count }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

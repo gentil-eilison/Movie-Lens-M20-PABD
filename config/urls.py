@@ -20,6 +20,7 @@ urlpatterns = [
     path("users/", include("movie_lens_django.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("csv/", include("movie_lens_django.core.urls")),
     path("genome/", include("movie_lens_django.genome.urls")),
     path("movies/", include("movie_lens_django.movies.urls")),
     path("ratings/", include("movie_lens_django.ratings.urls")),

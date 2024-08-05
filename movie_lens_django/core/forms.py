@@ -25,6 +25,6 @@ class SimpleCSVImportMetaDataForm(CSVImportMetaDataForm):
         )
         instance.inserted_data_count = records_added
         instance.errors_count = errors_count
-        instance.upload_time_in_minutes = elasped_time
+        instance.upload_time_in_seconds = elasped_time
         instance.save()
         return instance

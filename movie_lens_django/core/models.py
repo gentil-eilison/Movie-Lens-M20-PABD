@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CSVImportMetaData(models.Model):
-    upload_time_in_minutes = models.PositiveIntegerField(
+    upload_time_in_seconds = models.PositiveIntegerField(
         verbose_name=_("Upload Time in Minutes"),
         default=0,
     )
@@ -23,3 +23,18 @@ class CSVImportMetaData(models.Model):
 
     def __str__(self):
         return f"{self.csv_file.name}"
+
+    @property
+    def formatted_upload_time(self):
+        minutes, seconds = divmod(self.upload_time_in_seconds, 60)
+        if minutes:
+            return f"{minutes} min {seconds} s"
+        return f"{seconds} s"
+
+    @property
+    def formatted_inserted_data_count(self):
+        return f"{self.inserted_data_count:,}".replace(",", ".")
+
+    @property
+    def formatted_errors_count(self):
+        return f"{self.errors_count:,}".replace(",", ".")

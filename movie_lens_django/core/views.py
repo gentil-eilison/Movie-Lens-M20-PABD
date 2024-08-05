@@ -2,6 +2,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.forms import BaseForm
 from django.http.response import HttpResponse
 from django.views.generic import CreateView
+from django.views.generic import DetailView
 
 from movie_lens_django.core.forms import CSVImportMetaDataForm
 from movie_lens_django.core.models import CSVImportMetaData
@@ -25,3 +26,7 @@ class ConcurrentImportView(ImportView):
             filename=form.instance.csv_file.path,
         )
         return super().form_valid(form)
+
+
+class CSVDetailView(DetailView):
+    model = CSVImportMetaData
