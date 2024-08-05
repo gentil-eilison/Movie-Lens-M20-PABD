@@ -1,9 +1,9 @@
 import abc
 import importlib
+import sys
 import time
 
 import pandas as pd
-from celery import group
 from celery import shared_task
 
 from movie_lens_django.constants import READ_CSV_CHUNK_SIZE
@@ -31,15 +31,14 @@ class ConcurrentImport(abc.ABC):
             chunksize=READ_CSV_CHUNK_SIZE,
             quotechar='"',
         ) as reader:
-            chunk_tasks = []
             for chunk in reader:
                 chunk_data = chunk.to_dict(orient="records")
-                chunk_tasks.append(
-                    concurrent_import_class.process_csv_chunk.s(
-                        chunk_data,
-                    ),
+                sys.stdout.write(len(chunk_data))
+                errors_count, rows_count = concurrent_import_class.process_csv_chunk(
+                    chunk_data,
                 )
-            group(chunk_tasks).apply_async()
+                total_rows += rows_count
+                total_errors += errors_count
         end_time = time.time()
 
         csv_import = CSVImportMetaData.objects.get(id=csv_id)
