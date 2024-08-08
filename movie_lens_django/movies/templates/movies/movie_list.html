@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form method="get">
+    {{ filter.form.as_p }}
+    <input type="submit" />
+  </form>
+  {% if objects %}
+    {% for obj in objects %}
+      <tr>
+        <td>{{ obj.title }}</td>
+        <td>{{ obj.release_year }}</td>
+        <td>{{ obj.genres }}</td>
+        <td>{{ obj.genome_tags }}</td>
+      </tr>
+    {% endfor %}
+  {% endif %}
+{% endblock content %}

@@ -15,4 +15,5 @@ urlpatterns = [
         views.ImportCSVMovieTagView.as_view(),
         name="tags-by-user-csv-import",
     ),
+    path("list/", views.MoviesListView.as_view(), name="movie-list"),
 ]
