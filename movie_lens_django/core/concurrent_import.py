@@ -30,6 +30,8 @@ class ConcurrentImport(abc.ABC):
             filename,
             chunksize=READ_CSV_CHUNK_SIZE,
             quotechar='"',
+            na_values=None,
+            keep_default_na=False,
         ) as reader:
             for chunk in reader:
                 chunk_data = chunk.to_dict(orient="records")

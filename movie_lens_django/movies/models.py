@@ -63,3 +63,19 @@ class MovieGenomeTag(models.Model):
             f"Movie: {self.movie.title} - "
             f"User: {self.user_id}"
         )
+
+class MovieLinks(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="movie_link", verbose_name=_("Movie"))
+    imdb_id = models.CharField(max_length=8, null=True)
+    tmdb_id = models.CharField(max_length=15, null=True)
+
+    class Meta:
+        verbose_name = _("Movie Links")
+        verbose_name_plural = _("Movies Links")
+
+    def __str__(self):
+        return (
+            f"Movie ID: {self.movie} - "
+            f"IMDB ID: {self.imdb_id} - "
+            f"TMDB ID: {self.tmdb_id}"
+        )

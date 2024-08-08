@@ -129,3 +129,32 @@ class MovieTagConcurrentImport(ConcurrentImport):
                 return errors_count, rows_affected
         else:
             return errors_count, 0
+        
+class MovieLinksConcurrentImport(ConcurrentImport):
+    @staticmethod
+    def process_csv_chunk(chunk_data: list[dict]):
+        errors_count = 0
+        movies_ids = set(Movie.objects.values_list("id", flat=True))
+        insert_command = """
+        INSERT INTO movies_movielinks (movie_id, imdb_id, tmdb_id) VALUES
+        """
+        values = []
+        with connection.cursor() as cursor:
+            for row in chunk_data:
+                row_movie_id = row["movieId"]
+                if row_movie_id in movies_ids:
+                    imdb_id = row["imdbId"] if row["imdbId"] else "NULL"
+                    tmdb_id = row["tmdbId"] if row["tmdbId"] else "NULL"
+                    values.append(f"({row_movie_id}, {imdb_id}, {tmdb_id})")
+                else:
+                    errors_count += 1
+        if values:
+            insert_command += ", ".join(values)
+            insert_command += " ON CONFLICT DO NOTHING;"
+            with connection.cursor() as cursor:
+                cursor.execute(insert_command)
+                rows_affected = cursor.rowcount
+                sys.stdout.write(str(rows_affected))
+                return errors_count, rows_affected
+        else:
+            return errors_count, 0
