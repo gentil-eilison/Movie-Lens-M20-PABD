@@ -6,13 +6,15 @@
     <input type="submit" />
   </form>
   {% if objects %}
-    {% for obj in objects %}
-      <tr>
-        <td>{{ obj.title }}</td>
-        <td>{{ obj.release_year }}</td>
-        <td>{{ obj.genres }}</td>
-        <td>{{ obj.genome_tags }}</td>
-      </tr>
+    {% for movie in page_obj %}
+      {{ movie.title|upper }}
+      <br />
+      {{ movie.release_year }}
+      <br />
+      {{ movie.genres }}
+      <br />
+      {{ movie.title }}
+      <br />
     {% endfor %}
   {% endif %}
 {% endblock content %}
