@@ -6,19 +6,19 @@ app_name = "movies"
 
 urlpatterns = [
     path(
-        "csv-import/",
+        "import-movies/",
         views.ImportCSVMovieView.as_view(),
-        name="csv-import",
+        name="import-movies",
     ),
     path(
-        "tags-by-user/csv-import/",
+        "import-tags-by-user/",
         views.ImportCSVMovieTagView.as_view(),
-        name="tags-by-user-csv-import",
+        name="import-tags-by-user",
     ),
     path(
-        "links/csv-import/",
+        "import-links/",
         views.ImportCSVMovieLinksView.as_view(),
-        name="links-csv-import",
+        name="import-links",
     ),
     path("list/", views.MoviesListView.as_view(), name="movie-list"),
 ]

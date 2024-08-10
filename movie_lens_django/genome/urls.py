@@ -6,13 +6,13 @@ app_name = "genome"
 
 urlpatterns = [
     path(
-        "csv-import/",
+        "import-genome-tags/",
         views.ImportCSVGenomeTagView.as_view(),
-        name="csv-import",
+        name="import-genome-tags",
     ),
     path(
-        "scores-import/",
+        "import-scores/",
         views.ImportCSVGenomeScoreView.as_view(),
-        name="scores-import",
+        name="import-scores",
     ),
 ]
