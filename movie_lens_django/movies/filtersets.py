@@ -7,32 +7,32 @@ from movie_lens_django.movies.models import Movie
 
 class MovieFilterSet(django_filters.FilterSet):
     title = django_filters.CharFilter(
-        label="Título",
+        label="Title",
         field_name="title",
         lookup_expr="icontains",
     )
     release_year = django_filters.RangeFilter(
-        label="Ano de lançamento",
+        label="Release Year Range",
         field_name="release_year",
     )
     rating = django_filters.NumberFilter(
-        label="Avaliação mínima",
+        label="Minimum Rating",
         field_name="ratings__rating",
         lookup_expr="gte",
         distinct=True,
     )
     genres = django_filters.ModelMultipleChoiceFilter(
-        label="Gênero",
+        label="Genres",
         field_name="genres",
         queryset=Genre.objects.all(),
     )
     ratings_count = django_filters.NumberFilter(
-        label="Quantidade mínima de avaliações",
+        label="Min Ratings Count",
         method="filter_ratings_count",
         distinct=True,
     )
     user_id = django_filters.NumberFilter(
-        label="Id do usuário",
+        label="User ID",
         method="filter_user_id",
         distinct=True,
     )
