@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.db import connection
 from django.db import transaction
 
@@ -31,6 +32,9 @@ class GenomeScoresConcurrentImport(ConcurrentImport):
                 else:
                     errors_count += 1
             with transaction.atomic():
-                cursor.execute(insert_command)
-                rows_affected = cursor.rowcount
+                try:
+                    cursor.execute(insert_command)
+                    rows_affected = cursor.rowcount
+                except IntegrityError:
+                    errors_count = chunk_size
                 return errors_count, rows_affected

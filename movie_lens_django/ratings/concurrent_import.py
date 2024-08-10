@@ -2,6 +2,7 @@ import datetime
 
 import pytz
 from django.conf import settings
+from django.db import IntegrityError
 from django.db import connection
 from django.db import transaction
 
@@ -41,5 +42,8 @@ class RatingsConcurrentImport(ConcurrentImport):
             else:
                 errors_count += 1
         with connection.cursor() as cursor, transaction.atomic():
-            cursor.execute(insert_command)
+            try:
+                cursor.execute(insert_command)
+            except IntegrityError:
+                errors_count = rows_count
             return errors_count, cursor.rowcount

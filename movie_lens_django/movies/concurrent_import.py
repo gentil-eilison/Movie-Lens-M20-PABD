@@ -45,6 +45,7 @@ class MoviesConcurrentImport(ConcurrentImport):
         return genres_ids
 
     @staticmethod
+    @shared_task
     def process_csv_chunk(chunk_data: list[dict]):
         movies_genres = []
         errors_count = 0
@@ -82,7 +83,7 @@ class MoviesConcurrentImport(ConcurrentImport):
             try:
                 cursor.execute(insert_command)
             except IntegrityError:
-                errors_count = cursor.rowcount
+                errors_count = rows_count
             Movie.genres.through.objects.bulk_create(movies_genres)
             return errors_count, cursor.rowcount
 
@@ -108,7 +109,7 @@ class MovieTagConcurrentImport(ConcurrentImport):
             INSERT INTO genome_genometag (tag) VALUES (%s) RETURNING id;
         """
         values = []
-        with connection.cursor() as cursor:
+        with connection.cursor() as cursor, transaction.atomic():
             cursor.execute(sync_genome_tags_pks_sequence_command)
             for row in chunk_data:
                 row_tag = row["tag"].strip()
@@ -127,8 +128,11 @@ class MovieTagConcurrentImport(ConcurrentImport):
         if values:
             insert_command += ", ".join(values)
             insert_command += " ON CONFLICT DO NOTHING;"
-            with connection.cursor() as cursor:
-                cursor.execute(insert_command)
+            with connection.cursor() as cursor, transaction.atomic():
+                try:
+                    cursor.execute(insert_command)
+                except IntegrityError:
+                    errors_count = len(chunk_data)
                 rows_affected = cursor.rowcount
                 return errors_count, rows_affected
         else:
@@ -145,7 +149,7 @@ class MovieLinksConcurrentImport(ConcurrentImport):
         INSERT INTO movies_movielinks (movie_id, imdb_id, tmdb_id) VALUES
         """
         values = []
-        with connection.cursor() as cursor:
+        with connection.cursor() as cursor, transaction.atomic():
             for row in chunk_data:
                 row_movie_id = row["movieId"]
                 if row_movie_id in movies_ids:
@@ -157,8 +161,11 @@ class MovieLinksConcurrentImport(ConcurrentImport):
         if values:
             insert_command += ", ".join(values)
             insert_command += " ON CONFLICT DO NOTHING;"
-            with connection.cursor() as cursor:
-                cursor.execute(insert_command)
+            with connection.cursor() as cursor, transaction.atomic():
+                try:
+                    cursor.execute(insert_command)
+                except IntegrityError:
+                    errors_count = len(chunk_data)
                 rows_affected = cursor.rowcount
                 sys.stdout.write(str(rows_affected))
                 return errors_count, rows_affected
