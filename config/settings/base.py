@@ -327,3 +327,4 @@ SOCIALACCOUNT_FORMS = {"signup": "movie_lens_django.users.forms.UserSocialSignup
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+OMDB_API_KEY = env.str("OMDB_API_KEY")

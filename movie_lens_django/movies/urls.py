@@ -21,4 +21,5 @@ urlpatterns = [
         name="import-links",
     ),
     path("list/", views.MoviesListView.as_view(), name="movie-list"),
+    path("<int:pk>/", views.MovieDetailView.as_view(), name="movie-detail"),
 ]

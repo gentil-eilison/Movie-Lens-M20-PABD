@@ -21,7 +21,9 @@
       {% for movie in page_obj %}
         {% with ratings_count=movie.ratings.count avg_rating=movie.get_avg_rating %}
           <tr>
-            <td>{{ movie.title }}</td>
+            <td>
+              <a href="{{ movie.get_absolute_url }}">{{ movie.title }}</a>
+            </td>
             <td>{{ movie.get_genres_names }}</td>
             <td>{{ movie.release_year }}</td>
             <td>{{ avg_rating }}</td>

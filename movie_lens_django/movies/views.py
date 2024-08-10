@@ -1,3 +1,4 @@
+from django.views.generic import DetailView
 from django.views.generic import ListView
 from django_filters.views import FilterView
 
@@ -7,6 +8,7 @@ from movie_lens_django.movies.concurrent_import import MoviesConcurrentImport
 from movie_lens_django.movies.concurrent_import import MovieTagConcurrentImport
 from movie_lens_django.movies.filtersets import MovieFilterSet
 from movie_lens_django.movies.models import Movie
+from movie_lens_django.movies.services.ombd_service import OmdbService
 
 
 class ImportCSVMovieView(ConcurrentImportView):
@@ -31,3 +33,16 @@ class MoviesListView(FilterView, ListView):
     template_name = "movies/movie_list.html"
     context_object_name = "objects"
     paginate_by = 25
+
+
+class MovieDetailView(DetailView):
+    model = Movie
+    template_name = "movies/movie_detail.html"
+    context_object_name = "movie"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        omdb_service = OmdbService()
+        movie = self.get_object()
+        context["imdb_data"] = omdb_service.get_movie(movie.get_imdb_id())
+        return context

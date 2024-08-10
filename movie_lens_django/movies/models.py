@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.text import get_text_list
 from django.utils.translation import gettext_lazy as _
 
@@ -38,6 +39,9 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse("movies:movie-detail", kwargs={"pk": self.id})
+
     def get_genres_names(self):
         genres_names = tuple(self.genres.values_list("name", flat=True))
         return get_text_list(genres_names, "and")
@@ -46,6 +50,12 @@ class Movie(models.Model):
         ratings_values = tuple(self.ratings.values_list("rating", flat=True))
         ratings_sum = sum(ratings_values)
         return round(ratings_sum / len(ratings_values), 1)
+
+    def get_imdb_id(self):
+        movie_link = self.movie_link.first()
+        if movie_link:
+            return movie_link.imdb_id
+        return ""
 
 
 class MovieGenomeTag(models.Model):

@@ -1,12 +1,17 @@
+import importlib
 import re
 import sys
+import time
 
+import pandas as pd
 from celery import shared_task
 from django.db import IntegrityError
 from django.db import connection
 from django.db import transaction
 
+from movie_lens_django.constants import READ_CSV_CHUNK_SIZE
 from movie_lens_django.core.concurrent_import import ConcurrentImport
+from movie_lens_django.core.concurrent_import import CSVImportMetaData
 from movie_lens_django.genome.models import GenomeTag
 from movie_lens_django.movies.models import Genre
 from movie_lens_django.movies.models import Movie
@@ -141,7 +146,6 @@ class MovieTagConcurrentImport(ConcurrentImport):
 
 class MovieLinksConcurrentImport(ConcurrentImport):
     @staticmethod
-    @shared_task
     def process_csv_chunk(chunk_data: list[dict]):
         errors_count = 0
         movies_ids = set(Movie.objects.values_list("id", flat=True))
@@ -152,10 +156,10 @@ class MovieLinksConcurrentImport(ConcurrentImport):
         with connection.cursor() as cursor, transaction.atomic():
             for row in chunk_data:
                 row_movie_id = row["movieId"]
-                if row_movie_id in movies_ids:
+                if int(row_movie_id) in movies_ids:
                     imdb_id = row["imdbId"] if row["imdbId"] else "NULL"
                     tmdb_id = row["tmdbId"] if row["tmdbId"] else "NULL"
-                    values.append(f"({row_movie_id}, {imdb_id}, {tmdb_id})")
+                    values.append(f"({row_movie_id}, '{imdb_id}', '{tmdb_id}')")
                 else:
                     errors_count += 1
         if values:
@@ -171,3 +175,36 @@ class MovieLinksConcurrentImport(ConcurrentImport):
                 return errors_count, rows_affected
         else:
             return errors_count, 0
+
+    @staticmethod
+    @shared_task(name="call-import-links-task")
+    def call_import_task(concurrent_import_class_name: str, csv_id: int, filename: str):
+        module_name, class_name = concurrent_import_class_name.rsplit(".", 1)
+        module = importlib.import_module(module_name)
+        concurrent_import_class = getattr(module, class_name)
+
+        total_errors, total_rows = 0, 0
+        start_time = time.time()
+        with pd.read_csv(
+            filename,
+            chunksize=READ_CSV_CHUNK_SIZE,
+            quotechar='"',
+            na_values=None,
+            keep_default_na=False,
+            dtype=str,
+        ) as reader:
+            for chunk in reader:
+                chunk_data = chunk.to_dict(orient="records")
+                sys.stdout.write(len(chunk_data))
+                errors_count, rows_count = concurrent_import_class.process_csv_chunk(
+                    chunk_data,
+                )
+                total_rows += rows_count
+                total_errors += errors_count
+        end_time = time.time()
+
+        csv_import = CSVImportMetaData.objects.get(id=csv_id)
+        csv_import.upload_time_in_seconds = end_time - start_time
+        csv_import.errors_count = total_errors
+        csv_import.inserted_data_count = total_rows
+        csv_import.save()
