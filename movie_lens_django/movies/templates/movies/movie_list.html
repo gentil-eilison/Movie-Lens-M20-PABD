@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load next_filtered_page %}
+
 {% block content %}
   <form method="get">
     {{ filter.form.as_p }}
@@ -29,4 +31,17 @@
       {% endfor %}
     </tbody>
   </table>
+  <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="?{% next_filtered_page page=1 %}">first</a>
+        <a href="?{% next_filtered_page page=previous_page_number %}">previous</a>
+      {% endif %}
+    </span>
+    <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?{% next_filtered_page page=page_obj.next_page_number %}">next</a>
+      <a href="?{% next_filtered_page page=page_obj.paginator.num_pages %}">last</a>
+    {% endif %}
+  </div>
 {% endblock content %}
