@@ -1,6 +1,4 @@
-from typing import Any
-
-from django.db.models.query import QuerySet
+from django.views.generic import ListView
 from django_filters.views import FilterView
 
 from movie_lens_django.core.views import ConcurrentImportView
@@ -26,15 +24,10 @@ class ImportCSVMovieLinksView(ConcurrentImportView):
     template_name = "movies/movie_links_import_form.html"
 
 
-class MoviesListView(FilterView):
-    template_name = "movies/movie_list.html"
-    filterset_class = MovieFilterSet
-    context_object_name = "objects"
+class MoviesListView(FilterView, ListView):
     model = Movie
+    queryset = Movie.objects.all().prefetch_related("genome_tags", "genres")
+    filterset_class = MovieFilterSet
+    template_name = "movies/movie_list.html"
+    context_object_name = "objects"
     paginate_by = 25
-
-    def get_queryset(self) -> QuerySet[Any]:
-        queryset = super().get_queryset()
-        if not self.request.GET:
-            return queryset.none()
-        return queryset

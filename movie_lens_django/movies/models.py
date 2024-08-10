@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import get_text_list
 from django.utils.translation import gettext_lazy as _
 
 from movie_lens_django.constants import LONG_SIZED_CHAR_FIELD
@@ -37,6 +38,15 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+    def get_genres_names(self):
+        genres_names = tuple(self.genres.values_list("name", flat=True))
+        return get_text_list(genres_names, "and")
+
+    def get_avg_rating(self):
+        ratings_values = tuple(self.ratings.values_list("rating", flat=True))
+        ratings_sum = sum(ratings_values)
+        return round(ratings_sum / len(ratings_values), 1)
+
 
 class MovieGenomeTag(models.Model):
     movie = models.ForeignKey(
@@ -64,10 +74,16 @@ class MovieGenomeTag(models.Model):
             f"User: {self.user_id}"
         )
 
+
 class MovieLinks(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="movie_link", verbose_name=_("Movie"))
-    imdb_id = models.CharField(max_length=8, null=True)
-    tmdb_id = models.CharField(max_length=15, null=True)
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_link",
+        verbose_name=_("Movie"),
+    )
+    imdb_id = models.CharField(max_length=8, null=True)  # noqa: DJ001
+    tmdb_id = models.CharField(max_length=15, null=True)  # noqa: DJ001
 
     class Meta:
         verbose_name = _("Movie Links")

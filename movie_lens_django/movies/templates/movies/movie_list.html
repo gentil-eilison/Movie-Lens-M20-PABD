@@ -5,16 +5,28 @@
     {{ filter.form.as_p }}
     <input type="submit" />
   </form>
-  {% if objects %}
-    {% for movie in page_obj %}
-      {{ movie.title|upper }}
-      <br />
-      {{ movie.release_year }}
-      <br />
-      {{ movie.genres }}
-      <br />
-      {{ movie.title }}
-      <br />
-    {% endfor %}
-  {% endif %}
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Genres</th>
+        <th>Release Year</th>
+        <th>Average Rating</th>
+        <th>Total Ratings</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for movie in page_obj %}
+        {% with ratings_count=movie.ratings.count avg_rating=movie.get_avg_rating %}
+          <tr>
+            <td>{{ movie.title }}</td>
+            <td>{{ movie.get_genres_names }}</td>
+            <td>{{ movie.release_year }}</td>
+            <td>{{ avg_rating }}</td>
+            <td>{{ ratings_count }}</td>
+          </tr>
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock content %}

@@ -19,6 +19,7 @@ class MovieFilterSet(django_filters.FilterSet):
         label="Avaliação mínima",
         field_name="ratings__rating",
         lookup_expr="gte",
+        distinct=True,
     )
     genres = django_filters.ModelMultipleChoiceFilter(
         label="Gênero",
@@ -28,11 +29,12 @@ class MovieFilterSet(django_filters.FilterSet):
     ratings_count = django_filters.NumberFilter(
         label="Quantidade mínima de avaliações",
         method="filter_ratings_count",
+        distinct=True,
     )
     user_id = django_filters.NumberFilter(
         label="Id do usuário",
         method="filter_user_id",
-           
+        distinct=True,
     )
 
     class Meta:
@@ -44,7 +46,6 @@ class MovieFilterSet(django_filters.FilterSet):
     def filter_ratings_count(self, queryset, name, value):
         annotated_queryset = queryset.annotate(count=models.Count("ratings"))
         return annotated_queryset.filter(count__gte=value)
-    
+
     def filter_user_id(self, queryset, name, value):
         return queryset.filter(ratings__user=value)
-

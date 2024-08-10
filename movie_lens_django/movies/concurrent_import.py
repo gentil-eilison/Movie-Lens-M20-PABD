@@ -96,6 +96,10 @@ class MovieTagConcurrentImport(ConcurrentImport):
             tag_name: tag_id
             for tag_id, tag_name in GenomeTag.objects.values_list("id", "tag")
         }
+        sync_genome_tags_pks_sequence_command = """
+            SELECT SETVAL('public."genome_genometag_id_seq"', COALESCE(MAX(id), 1))
+            FROM public."genome_genometag";
+        """
         movies_ids = set(Movie.objects.values_list("id", flat=True))
         insert_command = """
         INSERT INTO movies_moviegenometag (user_id, genome_tag_id, movie_id) VALUES
@@ -105,8 +109,9 @@ class MovieTagConcurrentImport(ConcurrentImport):
         """
         values = []
         with connection.cursor() as cursor:
+            cursor.execute(sync_genome_tags_pks_sequence_command)
             for row in chunk_data:
-                row_tag = row["tag"]
+                row_tag = row["tag"].strip()
                 row_movie_id = row["movieId"]
 
                 if row_movie_id in movies_ids:
@@ -125,13 +130,14 @@ class MovieTagConcurrentImport(ConcurrentImport):
             with connection.cursor() as cursor:
                 cursor.execute(insert_command)
                 rows_affected = cursor.rowcount
-                sys.stdout.write(str(rows_affected))
                 return errors_count, rows_affected
         else:
             return errors_count, 0
-        
+
+
 class MovieLinksConcurrentImport(ConcurrentImport):
     @staticmethod
+    @shared_task
     def process_csv_chunk(chunk_data: list[dict]):
         errors_count = 0
         movies_ids = set(Movie.objects.values_list("id", flat=True))
