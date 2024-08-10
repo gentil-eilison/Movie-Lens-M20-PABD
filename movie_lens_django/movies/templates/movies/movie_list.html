@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form method="get">
+    {{ filter.form.as_p }}
+    <input type="submit" />
+  </form>
+  {% if objects %}
+    {% for movie in page_obj %}
+      {{ movie.title|upper }}
+      <br />
+      {{ movie.release_year }}
+      <br />
+      {{ movie.genres }}
+      <br />
+      {{ movie.title }}
+      <br />
+    {% endfor %}
+  {% endif %}
+{% endblock content %}
