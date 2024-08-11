@@ -12,6 +12,7 @@ from django.db import transaction
 from movie_lens_django.constants import READ_CSV_CHUNK_SIZE
 from movie_lens_django.core.concurrent_import import ConcurrentImport
 from movie_lens_django.core.concurrent_import import CSVImportMetaData
+from movie_lens_django.core.mixins import FormatUnixTimeStampMixin
 from movie_lens_django.genome.models import GenomeTag
 from movie_lens_django.movies.models import Genre
 from movie_lens_django.movies.models import Movie
@@ -50,7 +51,6 @@ class MoviesConcurrentImport(ConcurrentImport):
         return genres_ids
 
     @staticmethod
-    @shared_task
     def process_csv_chunk(chunk_data: list[dict]):
         movies_genres = []
         errors_count = 0
@@ -93,9 +93,8 @@ class MoviesConcurrentImport(ConcurrentImport):
             return errors_count, cursor.rowcount
 
 
-class MovieTagConcurrentImport(ConcurrentImport):
+class MovieTagConcurrentImport(ConcurrentImport, FormatUnixTimeStampMixin):
     @staticmethod
-    @shared_task
     def process_csv_chunk(chunk_data: list[dict]):
         errors_count = 0
         tags = {
@@ -108,7 +107,8 @@ class MovieTagConcurrentImport(ConcurrentImport):
         """
         movies_ids = set(Movie.objects.values_list("id", flat=True))
         insert_command = """
-        INSERT INTO movies_moviegenometag (user_id, genome_tag_id, movie_id) VALUES
+        INSERT INTO movies_moviegenometag (user_id, genome_tag_id, movie_id, timestamp)
+        VALUES
         """
         insert_tag_command = """
             INSERT INTO genome_genometag (tag) VALUES (%s) RETURNING id;
@@ -127,7 +127,12 @@ class MovieTagConcurrentImport(ConcurrentImport):
                         cursor.execute(insert_tag_command, [row_tag])
                         tag_id = cursor.fetchone()[0]
                         tags[row_tag] = tag_id
-                    values.append(f"({row['userId']}, {tag_id}, {row_movie_id})")
+                    timestamp = MovieTagConcurrentImport.format_unix_timestamp(
+                        row["timestamp"],
+                    )
+                    values.append(
+                        f"({row['userId']}, {tag_id}, {row_movie_id}, '{timestamp}')",
+                    )
                 else:
                     errors_count += 1
         if values:

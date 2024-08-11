@@ -77,6 +77,7 @@ class MovieGenomeTag(models.Model):
         related_name="movie_genome_tag",
         verbose_name=_("Genome Tag"),
     )
+    timestamp = models.DateTimeField(verbose_name=_("Timestamp"))
     user_id = models.PositiveIntegerField(verbose_name=_("User ID"))
 
     class Meta:
