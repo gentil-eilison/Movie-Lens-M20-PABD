@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <ul>
+    {% for csv_import in csvs %}
+      <li>
+        <a href="{{ csv_import.get_absolute_url }}">{{ csv_import.csv_file.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

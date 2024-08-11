@@ -47,4 +47,5 @@ class ConcurrentImport(abc.ABC):
         csv_import.upload_time_in_seconds = end_time - start_time
         csv_import.errors_count = total_errors
         csv_import.inserted_data_count = total_rows
+        csv_import.upload_status = CSVImportMetaData.ImportStatus.DONE
         csv_import.save()

@@ -3,6 +3,7 @@ from django.forms import BaseForm
 from django.http.response import HttpResponse
 from django.views.generic import CreateView
 from django.views.generic import DetailView
+from django.views.generic import ListView
 from django.views.generic import TemplateView
 
 from movie_lens_django.core.forms import CSVImportMetaDataForm
@@ -33,5 +34,16 @@ class ConcurrentImportView(ImportView):
         return super().form_valid(form)
 
 
+class CSVListView(ListView):
+    model = CSVImportMetaData
+    template_name = "core/imported_csvs_list.html"
+    context_object_name = "csvs"
+
+
 class CSVDetailView(DetailView):
     model = CSVImportMetaData
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["upload_done"] = self.get_object().upload_status == "Done"
+        return context
