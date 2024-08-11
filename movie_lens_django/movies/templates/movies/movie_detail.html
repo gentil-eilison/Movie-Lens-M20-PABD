@@ -85,4 +85,62 @@
       <p>Imdb data not found!</p>
     {% endif %}
   </div>
+  <div>
+    {% if tmdb_data %}
+      <p>
+        <b>Adult: </b>{{ tmdb_data.adult }}
+      </p>
+      <p>
+        <b>Budget: </b>{{ tmdb_data.budget }}
+      </p>
+      <p>
+        <b>Homepage: </b>
+        <a href="{{ tmdb_data.homepage }}">link</a>
+      </p>
+      <p>
+        <b>Overview: </b>{{ tmdb_data.overview }}
+      </p>
+      <p>
+        <b>Popularity: </b>{{ tmdb_data.popularity }}
+      </p>
+      <ul>
+        {% for production_company in tmdb_data.production_companies %}
+          <li>
+            <figure>
+              <img src="https://image.tmdb.org/t/p/w500/{{ production_company.logo_path }}"
+                   alt="{{ production_company.name }}-logo" />
+            </figure>
+            <p>
+              <b>Name: </b>{{ production_company.name }}
+            </p>
+            <p>
+              <b>Origin Country: </b>{{ production_company.origin_country }}
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+      <p>
+        <b>Status: </b>{{ tmdb_data.status }}
+      </p>
+      <p>
+        <b>Tagline: </b>{{ tmdb_data.tagline }}
+      </p>
+      <p>
+        <b>Video: </b>
+        {% if tmdb_data.video %}
+          Tem
+        {% else %}
+          Não tem
+        {% endif %}
+      </p>
+      <p>
+        <b>Vote Average: </b>{{ tmdb_data.vote_average }}
+      </p>
+      <p>
+        <b>Vote Count: </b>{{ tmdb_data.vote_count }}
+      </p>
+    {% else %}
+      <p>Tmdb data not found!</p>
+    {% endif %}
+  </div>
 {% endblock content %}

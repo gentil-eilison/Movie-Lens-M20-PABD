@@ -9,6 +9,7 @@ from movie_lens_django.movies.concurrent_import import MovieTagConcurrentImport
 from movie_lens_django.movies.filtersets import MovieFilterSet
 from movie_lens_django.movies.models import Movie
 from movie_lens_django.movies.services.ombd_service import OmdbService
+from movie_lens_django.movies.services.tmdb_service import TmdbService
 
 
 class ImportCSVMovieView(ConcurrentImportView):
@@ -43,6 +44,8 @@ class MovieDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         omdb_service = OmdbService()
+        tmdb_service = TmdbService()
         movie = self.get_object()
         context["imdb_data"] = omdb_service.get_movie(movie.get_imdb_id())
+        context["tmdb_data"] = tmdb_service.get_movie(movie.get_tmdb_id())
         return context

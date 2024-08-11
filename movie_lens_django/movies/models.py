@@ -57,6 +57,12 @@ class Movie(models.Model):
             return movie_link.imdb_id
         return ""
 
+    def get_tmdb_id(self):
+        movie_link = self.movie_link.first()
+        if movie_link:
+            return movie_link.tmdb_id
+        return ""
+
 
 class MovieGenomeTag(models.Model):
     movie = models.ForeignKey(
