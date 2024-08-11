@@ -7,6 +7,13 @@ Project for PABD course
 
 License: MIT
 
+## Dataset references
+https://www.kaggle.com/datasets/grouplens/movielens-20m-dataset
+
+## Logical diagram of data persistence.
+![movie lens django drawio](https://github.com/user-attachments/assets/2541df87-1a5b-491e-b59d-0cae22d85c82)
+
+## 
 ## Settings
 
 Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
