@@ -10,6 +10,10 @@ License: MIT
 ## Dataset references
 https://www.kaggle.com/datasets/grouplens/movielens-20m-dataset
 
+## Movies details based on API data: 
+- https://www.omdbapi.com/
+- https://www.themoviedb.org/
+
 ## Logical diagram of data persistence.
 ![movie lens django drawio](https://github.com/user-attachments/assets/2541df87-1a5b-491e-b59d-0cae22d85c82)
 
