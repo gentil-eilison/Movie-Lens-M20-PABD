@@ -1,6 +1,6 @@
 # Movie Lens Django
 
-Project for PABD course
+Movie Lens 20 data importer and movies info listing assignment for PABD course.
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -10,11 +10,11 @@ License: MIT
 ## Dataset references
 https://www.kaggle.com/datasets/grouplens/movielens-20m-dataset
 
-## Movies details based on API data: 
+## Movies details based on API data
 - https://www.omdbapi.com/
 - https://www.themoviedb.org/
 
-## Logical diagram of data persistence.
+## Logical diagram of data persistence
 ![movie lens django drawio](https://github.com/user-attachments/assets/2541df87-1a5b-491e-b59d-0cae22d85c82)
 
 ## 
