@@ -23,6 +23,13 @@ class Rating(models.Model):
     class Meta:
         verbose_name = _("Rating")
         verbose_name_plural = _("Ratings")
+        indexes = [
+            models.Index(
+                fields=["movie_id"],
+                include=["rating"],
+                name="rating_movie_id_index",
+            ),
+        ]
 
     def __str__(self):
         return (
