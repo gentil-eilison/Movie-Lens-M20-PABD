@@ -125,6 +125,32 @@ A imagem acima é um exemplo do ponto 3. Nela, para verificação de chaves estr
 
 É importante mencionar que em outras inserções, como a de filmes, é necessário criar mais de uma entidade. No de filmes, por exemplo, faz-se necessário criar os gêneros associados ao filme da linha -- caso já não tenham sido criados -- e já associar ao filme, levando a um tempo de processamento a mais.
 
+### Listagem de Filmes e Filtros
+
+A listagem dos filmes, junto com os filtros associados e paginação, foi feita com a biblioteca `django-filter`, junto das _features_ de paginação padrão do Django. Porém, o tempo de carregamento da página estava em torno dos 8s, um tempo inaceitável. Através da utilização da Django Debug Toolbar, foi possível ver, além do tempo de carregamento, quais consultas estavam demorando mais.
+
+![image](https://github.com/user-attachments/assets/77937cb4-c580-4f9a-ae1b-c03e861f6ebf)
+
+![image](https://github.com/user-attachments/assets/e90347e2-877a-4bef-abbb-d0ac7750afce)
+
+Devido a dados resultados de cálculos que eram feitos a partir da tabela `Rating` -- que possui mais de 20 milhões de tuplas --, a listagem de filmes estava sendo um gargalo. A partir disso, criamos um índice no atributo `movie_id` e incluímos o campo `rating` que estava sendo trago na consulta no índice, para que não fosse necessário buscar essa informação na tabela principal, já que o PostgreSQL guarda os índices em uma área separada. O modelo ficou da seguinte maneira:
+
+![image](https://github.com/user-attachments/assets/12d1face-3bd7-4e25-b176-358d52f5c831)
+
+Com isso, os resultados foram os seguintes:
+
+![image](https://github.com/user-attachments/assets/519b5b32-6928-406e-b80f-bbac959e4324)
+
+![image](https://github.com/user-attachments/assets/1c4aa325-99f0-4909-ae51-d1df1f7ca12c)
+
+O carregamento foi reduzido para **200 ms**.
+
+### Página de Detalhe dos Filmes
+
+Ao entrar na página de detalhe, requisições são feitas para os serviços do OMDB e TMDB. Foram criadas duas classes Façade para interação que, por baixo, têm uma implementação simples utilizando a biblioteca `requests` do Python. Com isso, na `DetailView` do filme, duas chaves foram adicionadas ao dicionário do contexto para que as informações estivessem disponíveis no _template_. A _view_ ficou da seguinte forma:
+
+![image](https://github.com/user-attachments/assets/03fd5efa-d6c4-4269-99b7-a8465cc50750)
+
 ## Settings
 
 Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
