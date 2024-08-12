@@ -7,10 +7,50 @@ Movie Lens 20 data importer and movies info listing assignment for PABD course.
 
 License: MIT
 
-## Dataset references
-https://www.kaggle.com/datasets/grouplens/movielens-20m-dataset
+## Referências do Dataset
+Foi utilizado [dataset do MovieLens](https://www.kaggle.com/datasets/grouplens/movielens-20m-dataset), um serviço de recomendação de filmes. Nele, os usuários podem recomendar vários filmes, avaliando eles
+por de 0.5 a 5, além de aplicar _tags_ aos filmes. Os arquivos utilizados foram:
 
-## Movies details based on API data
+**tags.csv**
+– Objetivo: Contém as tags aplicadas pelos usuários aos filmes.
+– Colunas:
+∗ userId: Identificador ́unico do usu ́ario.
+∗ movieId: Identificador único do filme.
+∗ tag: Tag aplicada ao filme.
+∗ timestamp: Carimbo de data/hora representando quando a tag foi aplicada (em
+segundos desde a meia-noite UTC de 1o de janeiro de 1970).
+
+**movie.csv**
+– Objetivo: Fornece informações básicas sobre os filmes.
+– Colunas:
+∗ movieId: Identificador  ́unico do filme.
+∗ title: T ́ıtulo do filme, incluindo o ano de lan ̧camento entre parˆenteses.
+∗ genres: Lista separada por pipe dos gˆeneros associados ao filme.
+
+**links.csv**
+– Objetivo: Fornece identificadores externos para os filmes no IMDb e no TMDb, permi-
+tindo a conexão com outras bases de dados de filmes.
+– Colunas:
+∗ movieId: Identificador ́unico do filme.
+∗ imdbId: Identificador do filme no IMDb.
+∗ tmdbId: Identificador do filme no TMDb (The Movie Database).
+
+**genome-scores.csv**
+– Objetivo: Contém pontuações de relevância de tags para os filmes, representando como
+fortemente um filme exibe as características descritas pelas tags.
+– Colunas:
+∗ movieId: Identificador único do filme.
+∗ tagId: Identificador único da tag.
+∗ relevance: Pontuação de relevância indicando a intensidade com que o filme exibe
+a característica representada pela tag (valor entre 0 e 1).
+
+**genome-tags.csv**
+– Objetivo: Fornece as descrições das tags usadas no arquivo genome-scores.csv.
+– Colunas:
+∗ tagId: Identificador único da tag.
+∗ tag: Descrição textual da tag.
+
+## APIs Utilizadas para Exibir Detalhes Sobre os Filmes
 - https://www.omdbapi.com/
 - https://www.themoviedb.org/
 
