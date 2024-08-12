@@ -68,10 +68,16 @@ a característica representada pela tag (valor entre 0 e 1).
 - https://www.omdbapi.com/
 - https://www.themoviedb.org/
 
-## Logical diagram of data persistence
+## Diagrama Lógico de Persistência de Dados
 ![movie lens django drawio](https://github.com/user-attachments/assets/2541df87-1a5b-491e-b59d-0cae22d85c82)
 
-## 
+## Visão Funcional do Projeto
+![image](https://github.com/user-attachments/assets/11bfce25-e272-4cd3-9020-3f22d5597081)
+
+Nosso projeto é composto por 4 componentes de alto nível: O projeto Django, que irá ser responsável pela aplicação _web_ em si; o Celery _worker_ em conjunto com o Redis como seu _broker_ para processamento de arquivos CSVs maiores; E um banco de dados relacional, sendo ele o PostgreSQL.
+
+É importante mencionar que nem todos os arquivos irão para o Celery. Quando o processamento do arquivo não travar o navegador do usuário, sendo muito rápido para processar, a tarefa não é enviada ao Celery, mas sim ao próprio servidor do Django. O Celery está operando como _worker_ único, ou seja, sem paralelismo de tarefas. Sua utilização foi necessária para que o usuário não tivesse sua requisição travada no navegador ao tentar processar arquivos muito grandes. Ao delegar essa tarefa para o _worker_, o usuário consegue continuar utilizando o site normalmente. 
+
 ## Settings
 
 Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
