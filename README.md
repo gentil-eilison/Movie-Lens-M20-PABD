@@ -1,6 +1,6 @@
 # Movie Lens Django
 
-Movie Lens 20 data importer and movies info listing assignment for PABD course.
+Este projeto consiste em uma aplicação que foi feita exclusivamente para realizar a importação dos dados presentes no _dataset_ do Movie Lens Django. Além de realizar a importação, também foi implementado uma listagem com os filmes disponíveis, contendo diversos filtros os quais o usuário pode utilizar para refinar sua busca. Ao entrar na página de detalhes do filme em específico, serão exibidos dados adicionais vindos de outras APIs, sendo elas a do OMDB e do TMDB.
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -77,6 +77,27 @@ a característica representada pela tag (valor entre 0 e 1).
 Nosso projeto é composto por 4 componentes de alto nível: O projeto Django, que irá ser responsável pela aplicação _web_ em si; o Celery _worker_ em conjunto com o Redis como seu _broker_ para processamento de arquivos CSVs maiores; E um banco de dados relacional, sendo ele o PostgreSQL.
 
 É importante mencionar que nem todos os arquivos irão para o Celery. Quando o processamento do arquivo não travar o navegador do usuário, sendo muito rápido para processar, a tarefa não é enviada ao Celery, mas sim ao próprio servidor do Django. O Celery está operando como _worker_ único, ou seja, sem paralelismo de tarefas. Sua utilização foi necessária para que o usuário não tivesse sua requisição travada no navegador ao tentar processar arquivos muito grandes. Ao delegar essa tarefa para o _worker_, o usuário consegue continuar utilizando o site normalmente. 
+
+## Explicação Detalhada e Técnicas Utilizadas
+
+O desenvolvimento do projeto se deu no estilo Kanban. A metodologia ágil utilizada foi a XP Programming, usando a técnica da programação em pares. Além disso, também foi utilizado o GitHub para versionamento do código e o Git para o desenvolvimento de várias _branches_ ao mesmo tempo em alguns momentos. A importação, como já foi explicado, pode ocorrer de duas maneiras: pelo Django, quando o arquivo é pequeno; e pelo Celery, quando é grande.
+
+### Importação pelo Django
+
+Para a importação pelo Django, foi criado a classe base `CSVImportMetaDataForm`, que usa o modelo `CSVImportMetaData`. Ela é definida da seguinte maneira.
+
+![image](https://github.com/user-attachments/assets/7fe5f537-3804-4557-9290-9763b52d81c1)
+
+O formulário possui somente o campo do arquivo nele, pois os outros atributos são metadados que serão preenchidos durante o processamento de dados. A partir dessa classe, foi criado outra, definida assim:
+
+![image](https://github.com/user-attachments/assets/1fdae6a8-5b98-46fa-b5e2-88dc692e0305)
+
+A classe acima sobrescreve o método `save` para que a atualização dos metadados ocorra. Além disso, define também um metódo abstrato -- `add_csv_rows` -- que deverá ser sobrescrito pela classe que herda desta e deverá conter o código de adicionar as tuplas ao banco de dados.
+
+Foi criada uma _view_ no _app core_, que será utilizada para esses formulários. Basta fazer com que a _view_ herde dela e sobrescrever os atributos `form_class` e `template_name`.
+
+![image](https://github.com/user-attachments/assets/8771ea24-db69-4214-add9-d12f646d59e9)
+
 
 ## Settings
 
