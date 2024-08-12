@@ -1,0 +1,410 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+
+body {
+  display: flex
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+  height: 100vh;
+  width: 100%;
+}
+
+header {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-bottom: 1px solid #dee2e6;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #343a40;
+}
+
+header p {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+  background-color: #020202;
+  color: #ffffff;
+}
+
+.header-main a {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+ul.nav-csv {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+}
+
+ul.nav-csv li {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+ul.nav-csv li:hover {
+  transform: translateY(-5px);
+  background-color: #000;
+}
+
+ul.nav-csv a {
+  display: block;
+  padding: 1rem;
+  text-align: center;
+  color: #000;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+ul.nav-csv a:hover {
+  color: #ffffff;
+}
+
+.navbar-nav .nav-link {
+  position: relative;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: #fff;
+  bottom: 0;
+  left: 50%;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  padding: 20px;
+}
+
+
+.home-message {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.home-message p {
+  font-size: 24px;
+  font-weight: 400;
+  color: #343a40;
+}
+
+.alert-debug {
+  color: black;
+  background-color: white;
+  border-color: #d6e9c6;
+}
+
+.alert-error {
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+.csv-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  height: 280px;
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+.csv-form form {
+  text-align: center;
+}
+
+.csv-form input[type="file"] {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.csv-form input[type="submit"] {
+  background-color: #000;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.csv-form input[type="submit"]:hover {
+  background-color: #343a40;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  width: 80%;
+  max-width: 500px;
+  height: auto;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+input[type="text"] {
+  height: 40px;
+}
+
+input[type="number"] {
+  height: 40px;
+}
+
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ddd;
+  height: 8px;
+  border-radius: 5px;
+  outline: none;
+  margin-bottom: 15px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+}
+
+select {
+  height: 40px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+select[multiple] {
+  height: auto;
+  padding: 10px;
+  background: #fff;
+}
+
+textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #000;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.filter-btn {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-btn:hover {
+  background-color: #;
+}
+
+.movie-table-container {
+  max-height: 500px;
+  overflow-y: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+thead {
+  background-color: #000;
+  position: sticky;
+  top: 0;
+  z-index: 0;
+}
+
+thead tr th {
+  color: #fff;
+}
+
+tbody {
+  background-color: #fff;
+}
+
+tbody tr td a {
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+tbody tr td a:hover {
+  color: #0056b3;
+  cursor: pointer;
+}
+
+.movie-title-link {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.movie-title-link:hover {
+  color: #0056b3;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.step-links a {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 12px;
+  margin: 0 5px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.step-links a:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+.current-page {
+  font-weight: bold;
+  color: #333;
+  margin: 0 10px;
+}
+
+.movie-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  gap: 1rem;
+}
+
+.movie-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  gap: 30px;
+}

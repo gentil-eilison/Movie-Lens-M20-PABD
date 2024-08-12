@@ -3,47 +3,59 @@
 {% load next_filtered_page %}
 
 {% block content %}
-  <form method="get">
-    {{ filter.form.as_p }}
-    <input type="submit" />
-  </form>
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Genres</th>
-        <th>Release Year</th>
-        <th>Average Rating</th>
-        <th>Total Ratings</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for movie in page_obj %}
-        {% with ratings_count=movie.ratings.count avg_rating=movie.get_avg_rating %}
-          <tr>
-            <td>
-              <a href="{{ movie.get_absolute_url }}">{{ movie.title }}</a>
-            </td>
-            <td>{{ movie.get_genres_names }}</td>
-            <td>{{ movie.release_year }}</td>
-            <td>{{ avg_rating }}</td>
-            <td>{{ ratings_count }}</td>
-          </tr>
-        {% endwith %}
-      {% endfor %}
-    </tbody>
-  </table>
+  <button id="openModal" class="filter-btn">Filter</button>
+  <div id="filterModal" class="modal">
+    <div class="modal-content">
+      <span class="close">x</span>
+      <h2>Filter Movies</h2>
+      <form method="get" class="filter-form">
+        {{ filter.form.as_p }}
+        <button type="submit" class="filter-btn">Filter</button>
+      </form>
+    </div>
+  </div>
+  <div class="movie-table-container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Genres</th>
+          <th>Release Year</th>
+          <th>Average Rating</th>
+          <th>Total Ratings</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for movie in page_obj %}
+          {% with ratings_count=movie.ratings.count avg_rating=movie.get_avg_rating %}
+            <tr>
+              <td>
+                <a href="{{ movie.get_absolute_url }}" class="movie-title-link">{{ movie.title }}</a>
+              </td>
+              <td>{{ movie.get_genres_names }}</td>
+              <td>{{ movie.release_year }}</td>
+              <td>{{ avg_rating|default:"N/A" }}</td>
+              <td>{{ ratings_count }}</td>
+            </tr>
+          {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   <div class="pagination">
     <span class="step-links">
       {% if page_obj.has_previous %}
-        <a href="?{% next_filtered_page page=1 %}">first</a>
-        <a href="?{% next_filtered_page page=previous_page_number %}">previous</a>
+        <a href="?{% next_filtered_page page=1 %}" class="btn btn-light">First</a>
+        <a href="?{% next_filtered_page page=page_obj.previous_page_number %}"
+           class="btn btn-light">Previous</a>
+      {% endif %}
+      <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?{% next_filtered_page page=page_obj.next_page_number %}"
+           class="btn btn-light">Next</a>
+        <a href="?{% next_filtered_page page=page_obj.paginator.num_pages %}"
+           class="btn btn-light">Last</a>
       {% endif %}
     </span>
-    <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}
-      <a href="?{% next_filtered_page page=page_obj.next_page_number %}">next</a>
-      <a href="?{% next_filtered_page page=page_obj.paginator.num_pages %}">last</a>
-    {% endif %}
   </div>
 {% endblock content %}

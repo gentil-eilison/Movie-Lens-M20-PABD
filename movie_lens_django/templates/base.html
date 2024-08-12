@@ -24,7 +24,7 @@
             referrerpolicy="no-referrer" />
       <!-- Your stuff: Third-party CSS libraries go here -->
       <!-- This file stores project-specific CSS -->
-      <link href="{% static 'css/project.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     {% endblock css %}
     <!-- Le javascript
     ================================================== -->
@@ -38,13 +38,14 @@
               referrerpolicy="no-referrer"></script>
       <!-- Your stuff: Third-party javascript libraries go here -->
       <!-- place project specific Javascript in this file -->
-      <script defer src="{% static 'js/project.js' %}"></script>
+      <script defer src="{% static 'js/index.js' %}"></script>
     {% endblock javascript %}
   </head>
-  <body class="{% block bodyclass %}{% endblock bodyclass %}">
+  <body>
     {% block body %}
-      <div class="mb-1">
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
+      <header class="header-main">
+        <a class="navbar-brand" href="{% url 'home' %}">Movie Lens Django</a>
+        <nav class="navbar navbar-expand-md navbar-light">
           <div class="container-fluid">
             <button class="navbar-toggler navbar-toggler-right"
                     type="button"
@@ -55,7 +56,6 @@
                     aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'home' %}">Movie Lens Django</a>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
@@ -71,7 +71,7 @@
             </div>
           </div>
         </nav>
-      </div>
+      </header>
       <div class="container">
         {% if messages %}
           {% for message in messages %}
@@ -86,7 +86,10 @@
         {% endif %}
         {% block main %}
           {% block content %}
-            <h1>Your Movies Database for Cinephiles!</h1>
+            <div class="home-message">
+              <h1>Welcome to Movie Lens</h1>
+              <p>Your Movies Database for Cinephiles!</p>
+            </div>
           {% endblock content %}
         {% endblock main %}
       </div>
