@@ -1,146 +1,157 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <header>
-    <h1>{{ movie.title }}</h1>
-    {% if imdb_data %}
-      <figure>
-        <img src="{{ imdb_data.Poster }}" alt="{{ movie.title }}-poster" />
-      </figure>
-    {% endif %}
-  </header>
-  <div>
-    {% if imdb_data %}
-      <p>
-        <b>Year: </b>{{ imdb_data.Year }}
-      </p>
-      <p>
-        <b>Rated: </b>{{ imdb_data.Rated }}
-      </p>
-      <p>
-        <b>Released: </b>{{ imdb_data.Released }}
-      </p>
-      <p>
-        <b>Runtime: </b>{{ imdb_data.Runtime }}
-      </p>
-      <p>
-        <b>Genre: </b>{{ imdb_data.Genre }}
-      </p>
-      <p>
-        <b>Director: </b>{{ imdb_data.Director }}
-      </p>
-      <p>
-        <b>Writer: </b>{{ imdb_data.Writer }}
-      </p>
-      <p>
-        <b>Actors: </b>{{ imdb_data.Actors }}
-      </p>
-      <p>
-        <b>Plot: </b>{{ imdb_data.Plot }}
-      </p>
-      <p>
-        <b>Language: </b>{{ imdb_data.Language }}
-      </p>
-      <p>
-        <b>Country: </b>{{ imdb_data.Country }}
-      </p>
-      <p>
-        <b>Awards: </b>{{ imdb_data.Awards }}
-      </p>
-      <ul>
-        {% for rating in imdb_data.Ratings %}
-          <li>
-            <b>Source: </b>{{ rating.Source }}; <b>Value: </b>{{ rating.Value }}
-          </li>
-        {% endfor %}
-      </ul>
-      <p>
-        <b>Metascore: </b>{{ imdb_data.Metascore }}
-      </p>
-      <p>
-        <b>imdbRating: </b>{{ imdb_data.imdbRating }}
-      </p>
-      <p>
-        <b>imdbVotes: </b>{{ imdb_data.imdbVotes }}
-      </p>
-      <p>
-        <b>imdbID: </b>{{ imdb_data.imdbID }}
-      </p>
-      <p>
-        <b>Type: </b>{{ imdb_data.Type }}
-      </p>
-      <p>
-        <b>DVD: </b>{{ imdb_data.DVD }}
-      </p>
-      <p>
-        <b>BoxOffice: </b>{{ imdb_data.BoxOffice }}
-      </p>
-      <p>
-        <b>Production: </b>{{ imdb_data.Production }}
-      </p>
-      <p>
-        <b>Website: </b>{{ imdb_data.Website }}
-      </p>
-    {% else %}
-      <p>Imdb data not found!</p>
-    {% endif %}
-  </div>
-  <div>
-    {% if tmdb_data %}
-      <p>
-        <b>Adult: </b>{{ tmdb_data.adult }}
-      </p>
-      <p>
-        <b>Budget: </b>{{ tmdb_data.budget }}
-      </p>
-      <p>
-        <b>Homepage: </b>
-        <a href="{{ tmdb_data.homepage }}">link</a>
-      </p>
-      <p>
-        <b>Overview: </b>{{ tmdb_data.overview }}
-      </p>
-      <p>
-        <b>Popularity: </b>{{ tmdb_data.popularity }}
-      </p>
-      <ul>
-        {% for production_company in tmdb_data.production_companies %}
-          <li>
-            <figure>
-              <img src="https://image.tmdb.org/t/p/w500/{{ production_company.logo_path }}"
-                   alt="{{ production_company.name }}-logo" />
-            </figure>
-            <p>
-              <b>Name: </b>{{ production_company.name }}
-            </p>
-            <p>
-              <b>Origin Country: </b>{{ production_company.origin_country }}
-            </p>
-          </li>
-        {% endfor %}
-      </ul>
-      <p>
-        <b>Status: </b>{{ tmdb_data.status }}
-      </p>
-      <p>
-        <b>Tagline: </b>{{ tmdb_data.tagline }}
-      </p>
-      <p>
-        <b>Video: </b>
-        {% if tmdb_data.video %}
-          Tem
-        {% else %}
-          Não tem
+  <div class="movie-container">
+    <div class="movie-content">
+      <div>
+        <h1>{{ movie.title }}</h1>
+        {% if imdb_data %}
+          <figure>
+            <img src="{{ imdb_data.Poster }}"
+                 alt="{{ movie.title }}-poster"
+                 height="500px"
+                 width="" />
+          </figure>
         {% endif %}
-      </p>
-      <p>
-        <b>Vote Average: </b>{{ tmdb_data.vote_average }}
-      </p>
-      <p>
-        <b>Vote Count: </b>{{ tmdb_data.vote_count }}
-      </p>
-    {% else %}
-      <p>Tmdb data not found!</p>
-    {% endif %}
+      </div>
+      <div>
+        {% if imdb_data %}
+          <div class="movie-detail-content">
+            <p>
+              <b>Year: </b>{{ imdb_data.Year }}
+            </p>
+            <p>
+              <b>Rated: </b>{{ imdb_data.Rated }}
+            </p>
+            <p>
+              <b>Released: </b>{{ imdb_data.Released }}
+            </p>
+            <p>
+              <b>Runtime: </b>{{ imdb_data.Runtime }}
+            </p>
+            <p>
+              <b>Genre: </b>{{ imdb_data.Genre }}
+            </p>
+            <p>
+              <b>Director: </b>{{ imdb_data.Director }}
+            </p>
+            <p>
+              <b>Writer: </b>{{ imdb_data.Writer }}
+            </p>
+            <p>
+              <b>Actors: </b>{{ imdb_data.Actors }}
+            </p>
+            <p>
+              <b>Plot: </b>{{ imdb_data.Plot }}
+            </p>
+            <p>
+              <b>Language: </b>{{ imdb_data.Language }}
+            </p>
+            <p>
+              <b>Country: </b>{{ imdb_data.Country }}
+            </p>
+            <p>
+              <b>Awards: </b>{{ imdb_data.Awards }}
+            </p>
+          </div>
+          <div class="movie-rating-content">
+            <ul>
+              {% for rating in imdb_data.Ratings %}
+                <li>
+                  <b>Source: </b>{{ rating.Source }}; <b>Value: </b>{{ rating.Value }}
+                </li>
+              {% endfor %}
+            </ul>
+            <p>
+              <b>Metascore: </b>{{ imdb_data.Metascore }}
+            </p>
+            <p>
+              <b>imdbRating: </b>{{ imdb_data.imdbRating }}
+            </p>
+            <p>
+              <b>imdbVotes: </b>{{ imdb_data.imdbVotes }}
+            </p>
+            <p>
+              <b>imdbID: </b>{{ imdb_data.imdbID }}
+            </p>
+            <p>
+              <b>Type: </b>{{ imdb_data.Type }}
+            </p>
+            <p>
+              <b>DVD: </b>{{ imdb_data.DVD }}
+            </p>
+            <p>
+              <b>BoxOffice: </b>{{ imdb_data.BoxOffice }}
+            </p>
+            <p>
+              <b>Production: </b>{{ imdb_data.Production }}
+            </p>
+            <p>
+              <b>Website: </b>{{ imdb_data.Website }}
+            </p>
+          </div>
+        {% else %}
+          <p>Imdb data not found!</p>
+        {% endif %}
+      </div>
+    </div>
+    <div>
+      {% if tmdb_data %}
+        <p>
+          <b>Adult: </b>{{ tmdb_data.adult }}
+        </p>
+        <p>
+          <b>Budget: </b>{{ tmdb_data.budget }}
+        </p>
+        <p>
+          <b>Homepage: </b>
+          <a href="{{ tmdb_data.homepage }}">link</a>
+        </p>
+        <p>
+          <b>Overview: </b>{{ tmdb_data.overview }}
+        </p>
+        <p>
+          <b>Popularity: </b>{{ tmdb_data.popularity }}
+        </p>
+        <ul>
+          {% for production_company in tmdb_data.production_companies %}
+            <li>
+              <figure>
+                <img src="https://image.tmdb.org/t/p/w500/{{ production_company.logo_path }}"
+                     alt="{{ production_company.name }}-logo" />
+              </figure>
+              <p>
+                <b>Name: </b>{{ production_company.name }}
+              </p>
+              <p>
+                <b>Origin Country: </b>{{ production_company.origin_country }}
+              </p>
+            </li>
+          {% endfor %}
+        </ul>
+        <p>
+          <b>Status: </b>{{ tmdb_data.status }}
+        </p>
+        <p>
+          <b>Tagline: </b>{{ tmdb_data.tagline }}
+        </p>
+        <p>
+          <b>Video: </b>
+          {% if tmdb_data.video %}
+            Tem
+          {% else %}
+            Não tem
+          {% endif %}
+        </p>
+        <p>
+          <b>Vote Average: </b>{{ tmdb_data.vote_average }}
+        </p>
+        <p>
+          <b>Vote Count: </b>{{ tmdb_data.vote_count }}
+        </p>
+      {% else %}
+        <p>Tmdb data not found!</p>
+      {% endif %}
+    </div>
   </div>
 {% endblock content %}
