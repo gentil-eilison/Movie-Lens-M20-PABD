@@ -108,11 +108,12 @@ ul.nav-csv a:hover {
 }
 
 .container {
-  max-width: 1200px;
-  width: 100%;
-  padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
-
 
 .home-message {
   text-align: center;
@@ -203,6 +204,23 @@ ul.nav-csv a:hover {
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+.open-modal-btn {
+  position: absolute;
+  top: 12%;
+  right: 10%;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 40px;
+}
+
+.open-modal-btn:hover {
+  background-color: #;
 }
 
 .close {
@@ -314,7 +332,7 @@ textarea:focus {
 .movie-table-container {
   max-height: 500px;
   overflow-y: auto;
-  margin-top: 20px;
+  margin-top: 80px;
   margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -407,4 +425,19 @@ tbody tr td a:hover {
   align-items: flex-start;
   width: 100%;
   gap: 30px;
+}
+
+.movie-detail-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.movie-rating-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }

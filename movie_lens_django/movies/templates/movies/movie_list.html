@@ -3,7 +3,6 @@
 {% load next_filtered_page %}
 
 {% block content %}
-  <button id="openModal" class="filter-btn">Filter</button>
   <div id="filterModal" class="modal">
     <div class="modal-content">
       <span class="close">x</span>
@@ -14,6 +13,7 @@
       </form>
     </div>
   </div>
+  <button id="openModal" class="open-modal-btn">Filter</button>
   <div class="movie-table-container">
     <table class="table table-striped">
       <thead>
