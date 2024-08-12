@@ -114,6 +114,17 @@ Após isso, também foi criado uma _view_ específica para esse tipo de importa�
 
 Ela sobrescreve o método `form_valid` da `CreateView`, pois só é possível fazer o processamento dos dados depois que o formulário foi enviado com sucesso. É chamado o `form.save` para que a instância do `CSVImportMetaData` seja salva no banco. Após isso, a classe que foi definida no `concurrent_import_class` chamará o seu método `call_import_task` com o `.delay`, delegando a tarefa pro Celery e liberando a _thread_ da requisição do usuário para continuar.
 
+Dentro do método `process_csv_chunk` foram utilizadas algumas técnicas para garantir que o processamento fosse feito da forma mais eficiente possível. As principais diretrizes foram:
+1. Utilizar a _lazy creation_ do Django para criar os objetos e depois utilizar o `bulk_create` para inserção em lotes;
+2. Evitar validação por meio dos formulários do Django de dados da linha que contenham colunas que fazem referências de chave estrangeira;
+3. Caso necessário, utilizar SQL puro para fazer as inserções.
+
+![image](https://github.com/user-attachments/assets/fa38e70e-4ae3-4f14-a751-511ebefa50e1)
+
+A imagem acima é um exemplo do ponto 3. Nela, para verificação de chaves estrangeiras, foi trazido a lista dos ids dos filmes em uma única consulta, convertendo todos eles em um conjunto. O mesmo foi feito para os ids das tags. Não foi utilizado uma lista porque ela é mais lenta que o conjunto para a operação `in` do Python, sendo essa operação utilizada para verificação de colunas de chave estrangeira. Caso as chaves estrangeiras não batessem, uma linha errada é considerada. No fim, executa-se o comando para a inserção. Caso ocorra um `IntegrityError`, nenhuma linha é inserida, fazendo com que a contagem de erros seja igual ao tamanho do pedaço processado. Caso contrário, é possível acessar a quantidade de linhas afetadas pelo comando usando o `cursor.rowcount`. O `ON CONFLICT DO NOTHING` foi utilizado para o caso de duplicação de inserções.
+
+É importante mencionar que em outras inserções, como a de filmes, é necessário criar mais de uma entidade. No de filmes, por exemplo, faz-se necessário criar os gêneros associados ao filme da linha -- caso já não tenham sido criados -- e já associar ao filme, levando a um tempo de processamento a mais.
+
 ## Settings
 
 Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
