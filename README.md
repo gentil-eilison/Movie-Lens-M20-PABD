@@ -98,6 +98,21 @@ Foi criada uma _view_ no _app core_, que será utilizada para esses formulários
 
 ![image](https://github.com/user-attachments/assets/8771ea24-db69-4214-add9-d12f646d59e9)
 
+### Importação pelo Celery
+
+Para as importações que travariam o navegador do usuário, foram criadas algumas classes que, em conjunto, realizam o trabalho da importação. A primeira delas foi uma classe abstrata chamada de `ConcurrentImport`, definida da seguinte maneira:
+
+![image](https://github.com/user-attachments/assets/c817d5b6-8e2d-4306-8981-88bf74f9570b)
+
+Nela, um método estático e abstrato é definido. Ele se chama `process_csv_chunk` e irá realizar o processamento do pedaço específico do CSV. Também foi definido outro método estático, chamado `call_import_task`. Como ele está com o _decorator_ `shared_task`, o sistema irá entendê-lo como uma tarefa a ser executada pelo Celery. Ele recebe o nome da subclasse que implementa o método `process_csv_chunk`; o nome do arquivo csv; e o ID da tupla de `CSVImportMetaData` para atualização dos metadados.
+
+O método que serve como tarefa do Celery pega a _string_ passada que representa a subclasse do `ConcurrentImport` e realiza a importação dinâmica dela. Após isso, o pandas é utilizado para a leitura do arquivo em pedaços para que o processamento não trave ou ocupe muito espaço na memória principal. Para cada peçado, o método que os processa é chamado. Esse método deve retornar a quantidade de linhas que deram certo e as que não deram. Após todas as linhas serem processadas, os metadados do CSV são atualizados.
+
+Após isso, também foi criado uma _view_ específica para esse tipo de importação, dentro do _app core_. Ela consiste no seguinte código:
+
+![image](https://github.com/user-attachments/assets/1260d6f1-cc4f-4efa-9f1a-cdd2ceb74140)
+
+
 
 ## Settings
 
