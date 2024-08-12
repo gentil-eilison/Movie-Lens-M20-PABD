@@ -112,7 +112,7 @@ Após isso, também foi criado uma _view_ específica para esse tipo de importa�
 
 ![image](https://github.com/user-attachments/assets/1260d6f1-cc4f-4efa-9f1a-cdd2ceb74140)
 
-
+Ela sobrescreve o método `form_valid` da `CreateView`, pois só é possível fazer o processamento dos dados depois que o formulário foi enviado com sucesso. É chamado o `form.save` para que a instância do `CSVImportMetaData` seja salva no banco. Após isso, a classe que foi definida no `concurrent_import_class` chamará o seu método `call_import_task` com o `.delay`, delegando a tarefa pro Celery e liberando a _thread_ da requisição do usuário para continuar.
 
 ## Settings
 
